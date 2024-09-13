@@ -9,14 +9,14 @@ namespace CourseWork.Source.DataBaseRelated
     internal class DataBase
     {
         /// <summary>
-        /// Соединение с базой.
+        /// соединение с базой данных
         /// </summary>
         public SQLiteConnection Connection { set; get; }
 
         /// <summary>
-        /// Выполнить команду без результата.
+        /// выполнить команду без возврата данных
         /// </summary>
-        /// <param name="command">SQL-команда.</param>
+        /// <param name="command">sql-команда</param>
         public void ExecuteCommandNQ(SQLiteCommand command)
         {
             try
@@ -28,16 +28,16 @@ namespace CourseWork.Source.DataBaseRelated
             }
             catch (Exception ex)
             {
-                if (Connection.State == ConnectionState.Open) Connection.Close();
+                CloseConnectionIfOpen();
                 throw ex.InnerException;
             }
         }
 
         /// <summary>
-        /// Выполнить команду, вернуть результат.
+        /// выполнить команду с возвратом результата
         /// </summary>
-        /// <param name="command">SQL-команда.</param>
-        /// <returns>Результат команды.</returns>
+        /// <param name="command">sql-команда</param>
+        /// <returns>результат команды</returns>
         public object ExecuteCommandScalar(SQLiteCommand command)
         {
             try
@@ -50,16 +50,16 @@ namespace CourseWork.Source.DataBaseRelated
             }
             catch (Exception ex)
             {
-                if (Connection.State == ConnectionState.Open) Connection.Close();
+                CloseConnectionIfOpen();
                 throw ex.InnerException;
             }
         }
 
         /// <summary>
-        /// Вернуть данные как таблицу.
+        /// получить данные как таблицу
         /// </summary>
-        /// <param name="command">SQL-команда.</param>
-        /// <returns>Таблица данных.</returns>
+        /// <param name="command">sql-команда</param>
+        /// <returns>таблица данных</returns>
         public DataTable GetDataTable(SQLiteCommand command)
         {
             try
@@ -75,16 +75,16 @@ namespace CourseWork.Source.DataBaseRelated
             }
             catch (Exception ex)
             {
-                if (Connection.State == ConnectionState.Open) Connection.Close();
+                CloseConnectionIfOpen();
                 throw ex.InnerException;
             }
         }
 
         /// <summary>
-        /// Вернуть строку как словарь.
+        /// получить строку как словарь
         /// </summary>
-        /// <param name="command">SQL-команда.</param>
-        /// <returns>Словарь данных.</returns>
+        /// <param name="command">sql-команда</param>
+        /// <returns>словарь данных</returns>
         public Dictionary<string, string> GetRowAsDictionary(SQLiteCommand command)
         {
             try
@@ -92,12 +92,13 @@ namespace CourseWork.Source.DataBaseRelated
                 Connection.Open();
                 command.Connection = Connection;
                 SQLiteDataReader reader = command.ExecuteReader();
-                if (reader.FieldCount == 0) {
+                if (reader.FieldCount == 0) 
+                {
                     throw new Exception("ошибка данных");
                 }
                 reader.Read();
                 Dictionary<string, string> dictionary = Enumerable.Range(0, reader.FieldCount)
-                                                        .ToDictionary(reader.GetName, reader.GetString); 
+                                                        .ToDictionary(reader.GetName, reader.GetString);
                 reader.Close();
                 reader.DisposeAsync();
                 Connection.Close();
@@ -105,16 +106,16 @@ namespace CourseWork.Source.DataBaseRelated
             }
             catch (Exception ex)
             {
-                if (Connection.State == ConnectionState.Open) Connection.Close();
+                CloseConnectionIfOpen();
                 throw ex.InnerException;
             }
         }
 
         /// <summary>
-        /// Вернуть значения столбца как список.
+        /// получить значения столбца как список
         /// </summary>
-        /// <param name="command">SQL-команда.</param>
-        /// <returns>Список строк.</returns>
+        /// <param name="command">sql-команда</param>
+        /// <returns>список строк</returns>
         public List<string> GetColumnValuesAsList(SQLiteCommand command)
         {
             try
@@ -135,13 +136,13 @@ namespace CourseWork.Source.DataBaseRelated
             }
             catch (Exception ex)
             {
-                if (Connection.State == ConnectionState.Open) Connection.Close();
+                CloseConnectionIfOpen();
                 throw ex.InnerException;
             }
         }
 
         /// <summary>
-        /// Закрыть соединение, если оно открыто.
+        /// закрыть соединение если оно открыто
         /// </summary>
         private void CloseConnectionIfOpen()
         {
