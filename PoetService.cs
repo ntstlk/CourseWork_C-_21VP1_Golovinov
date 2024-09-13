@@ -23,8 +23,10 @@ namespace CourseWork.Source.Services
         #region CRUD Operations
 
         /// <summary>
-        /// получает поэта по телефону
+        /// получает поэта по номеру телефона
         /// </summary>
+        /// <param name="phoneNumber">номер телефона</param>
+        /// <returns>объект поэта</returns>
         public Person GetByPhoneNumber(string phoneNumber)
         {
             var fields = LoadFields(phoneNumber);
@@ -41,6 +43,7 @@ namespace CourseWork.Source.Services
         /// <summary>
         /// возвращает всех поэтов
         /// </summary>
+        /// <returns>таблица поэтов</returns>
         public DataTable GetDataTableOfAll()
         {
             var command = new SQLiteCommand($"SELECT * FROM `{TableName}`");
@@ -50,6 +53,7 @@ namespace CourseWork.Source.Services
         /// <summary>
         /// сохраняет поэта
         /// </summary>
+        /// <param name="poet">объект поэта</param>
         public void Save(Person poet)
         {
             if (Exists(poet.PhoneNumber))
@@ -70,8 +74,9 @@ namespace CourseWork.Source.Services
         }
 
         /// <summary>
-        /// удаляет поэта по телефону
+        /// удаляет поэта по номеру телефона
         /// </summary>
+        /// <param name="phoneNumber">номер телефона</param>
         public void Delete(string phoneNumber)
         {
             var command = new SQLiteCommand($"DELETE FROM `{TableName}` " +
@@ -83,6 +88,7 @@ namespace CourseWork.Source.Services
         /// <summary>
         /// обновляет данные поэта
         /// </summary>
+        /// <param name="poet">объект поэта</param>
         public void Update(Person poet)
         {
             var command = new SQLiteCommand($"UPDATE " +
@@ -113,14 +119,18 @@ namespace CourseWork.Source.Services
         /// <summary>
         /// форматирует дату рождения
         /// </summary>
+        /// <param name="dateOfBirth">дата рождения</param>
+        /// <returns>форматированная дата рождения</returns>
         public string GetFormatDateOfBirth(DateTime dateOfBirth)
         {
             return dateOfBirth.ToString("yyyy-MM-dd");
         }
 
         /// <summary>
-        /// загружает поля поэта по телефону
+        /// загружает поля поэта по номеру телефона
         /// </summary>
+        /// <param name="phoneNumber">номер телефона</param>
+        /// <returns>словарь с полями поэта</returns>
         public Dictionary<string, string> LoadFields(string phoneNumber)
         {
             var command = new SQLiteCommand(
@@ -131,8 +141,10 @@ namespace CourseWork.Source.Services
         }
 
         /// <summary>
-        /// проверяет, существует ли поэт с данным телефоном
+        /// проверяет, существует ли поэт с данным номером телефона
         /// </summary>
+        /// <param name="phoneNumber">номер телефона</param>
+        /// <returns>true если поэт существует</returns>
         private bool Exists(string phoneNumber)
         {
             var command = new SQLiteCommand(
@@ -175,13 +187,13 @@ namespace CourseWork.Source.Services
         }
 
         /// <summary>
-        /// регулярное выражение для телефона
+        /// регулярное выражение для номера телефона
         /// </summary>
         [GeneratedRegex("^\\+?\\d{1,3}\\s?\\(?\\d{3}\\)?[-.\\s]?\\d{3}[-.\\s]?\\d{4}$")]
         public static partial Regex RegexPhoneNumber();
 
         /// <summary>
-        /// требования к телефону
+        /// требования к номеру телефона
         /// </summary>
         public static string GetRequirementsForPhoneNumber()
         {
