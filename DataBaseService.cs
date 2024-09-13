@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 namespace CourseWork.Source.Services
 {
     /// <summary>
-    /// Управление базой данных. Создание и подключение.
+    /// управление базой данных создание и подключение
     /// </summary>
     internal partial class DataBaseService
     {
@@ -15,14 +15,14 @@ namespace CourseWork.Source.Services
         private DataBase _dataBase;
 
         /// <summary>
-        /// Конструктор (приватный для Singleton).
+        /// конструктор (приватный для singleton)
         /// </summary>
         private DataBaseService() { }
 
         /// <summary>
-        /// Получить экземпляр сервиса (Singleton).
+        /// получить экземпляр сервиса (singleton)
         /// </summary>
-        /// <returns>Экземпляр <see cref="DataBaseService"/>.</returns>
+        /// <returns>экземпляр DataBaseService</returns>
         public static DataBaseService GetInstance()
         {
             if (_instance == null)
@@ -35,9 +35,9 @@ namespace CourseWork.Source.Services
         }
 
         /// <summary>
-        /// Создать новую базу данных.
+        /// создать новую базу данных
         /// </summary>
-        /// <param name="dataBaseName">Имя базы данных.</param>
+        /// <param name="dataBaseName">имя базы данных</param>
         public void SetNewDataBase(string dataBaseName)
         {
             string dataBasePath = Path.Combine(_dataBasesPath, $"{dataBaseName}.db");
@@ -48,9 +48,9 @@ namespace CourseWork.Source.Services
         }
 
         /// <summary>
-        /// Подключиться к существующей базе данных.
+        /// подключиться к существующей базе данных
         /// </summary>
-        /// <param name="dataBaseName">Имя базы данных.</param>
+        /// <param name="dataBaseName">имя базы данных</param>
         public void SetExistingDataBase(string dataBaseName)
         {
             string dataBasePath = Path.Combine(_dataBasesPath, $"{dataBaseName}.db");
@@ -59,9 +59,9 @@ namespace CourseWork.Source.Services
         }
 
         /// <summary>
-        /// Установить подключение к базе данных.
+        /// установить подключение к базе данных
         /// </summary>
-        /// <param name="dataBasePath">Путь к базе данных.</param>
+        /// <param name="dataBasePath">путь к базе данных</param>
         private void SetConnectionToDataBase(string dataBasePath)
         {
             string connectionString = $"Data Source={dataBasePath}; Version=3;";
@@ -69,7 +69,7 @@ namespace CourseWork.Source.Services
         }
 
         /// <summary>
-        /// Настроить подключение к сервисам поэтов, критиков и работ.
+        /// настроить подключение к сервисам поэтов критиков и работ
         /// </summary>
         private void SetDataBaseToServices()
         {
@@ -79,7 +79,7 @@ namespace CourseWork.Source.Services
         }
 
         /// <summary>
-        /// Создать таблицы базы данных.
+        /// создать таблицы базы данных
         /// </summary>
         private void CreateDataTables()
         {
@@ -109,28 +109,28 @@ namespace CourseWork.Source.Services
         }
 
         /// <summary>
-        /// Проверить, существует ли база данных.
+        /// проверить существует ли база данных
         /// </summary>
-        /// <param name="dataBaseName">Имя базы данных.</param>
-        /// <returns>True, если база данных существует.</returns>
+        /// <param name="dataBaseName">имя базы данных</param>
+        /// <returns>true если база данных существует</returns>
         public bool CheckDataBaseExists(string dataBaseName)
         {
             return File.Exists(Path.Combine(_dataBasesPath, $"{dataBaseName}.db"));
         }
 
         /// <summary>
-        /// Регулярное выражение для валидации имени базы данных.
+        /// регулярное выражение для валидации имени базы данных
         /// </summary>
         [GeneratedRegex("^[A-Za-zА]{3,15}$")]
         public static partial Regex RegexDataBaseName();
 
         /// <summary>
-        /// Описание требований к имени базы данных.
+        /// описание требований к имени базы данных
         /// </summary>
-        /// <returns>Сообщение о требованиях к имени базы данных.</returns>
+        /// <returns>сообщение о требованиях к имени базы данных</returns>
         public static string GetRequirementsForDataBaseName()
         {
-            return "Имя должно состоять из латинских букв и быть длиной от 3 до 15 символов";
+            return "имя должно состоять из латинских букв и быть длиной от 3 до 15 символов";
         }
     }
 }
