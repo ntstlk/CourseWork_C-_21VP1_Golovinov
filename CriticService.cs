@@ -8,23 +8,20 @@ using System.Text.RegularExpressions;
 
 namespace CourseWork.Source.Services
 {
-    /// <summary>
-    /// Управление данными критиков. Операции CRUD.
-    /// </summary>
     internal partial class CriticService
     {
         /// <summary>
-        /// База данных для запросов.
+        /// база данных для запросов
         /// </summary>
         public static DataBase DB { get; set; }
 
         /// <summary>
-        /// Таблица критиков.
+        /// таблица критиков
         /// </summary>
         private const string TableName = "critics";
 
         /// <summary>
-        /// Сопоставление полей класса и колонок таблицы.
+        /// маппинг полей критика с таблицей
         /// </summary>
         public static readonly Dictionary<string, string> ColumnMapping = new Dictionary<string, string>()
         {
@@ -37,10 +34,10 @@ namespace CourseWork.Source.Services
         #region CRUD Operations
 
         /// <summary>
-        /// Возвращает критика по номеру телефона.
+        /// получить критика по номеру телефона
         /// </summary>
-        /// <param name="phoneNumber">Номер телефона критика.</param>
-        /// <returns>Критик.</returns>
+        /// <param name="phoneNumber">номер телефона критика</param>
+        /// <returns>объект Person с данными критика</returns>
         public Person GetByPhoneNumber(string phoneNumber)
         {
             var fields = LoadFields(phoneNumber);
@@ -55,9 +52,9 @@ namespace CourseWork.Source.Services
         }
 
         /// <summary>
-        /// Возвращает всех критиков.
+        /// получить всех критиков
         /// </summary>
-        /// <returns>Таблица критиков.</returns>
+        /// <returns>таблица данных всех критиков</returns>
         public DataTable GetDataTableOfAll()
         {
             var command = new SQLiteCommand($"SELECT * FROM `{TableName}`");
@@ -65,14 +62,14 @@ namespace CourseWork.Source.Services
         }
 
         /// <summary>
-        /// Сохраняет критика.
+        /// сохранить критика
         /// </summary>
-        /// <param name="employee">Критик.</param>
+        /// <param name="employee">объект Person с данными критика</param>
         public void Save(Person employee)
         {
             if (Exists(employee.PhoneNumber))
             {
-                throw new Exception("Номер телефона уже используется.");
+                throw new Exception("Номер телефона уже используется");
             }
             var command = new SQLiteCommand(
                 $"INSERT INTO `{TableName}`" +
@@ -88,9 +85,9 @@ namespace CourseWork.Source.Services
         }
 
         /// <summary>
-        /// Удаляет критика по номеру телефона.
+        /// удалить критика по номеру телефона
         /// </summary>
-        /// <param name="phoneNumber">Номер телефона.</param>
+        /// <param name="phoneNumber">номер телефона критика</param>
         public void Delete(string phoneNumber)
         {
             var command = new SQLiteCommand($"DELETE FROM `{TableName}` WHERE {ColumnMapping["PhoneNumber"]} = @phoneNumber;");
@@ -99,9 +96,9 @@ namespace CourseWork.Source.Services
         }
 
         /// <summary>
-        /// Обновляет данные критика.
+        /// обновить данные критика
         /// </summary>
-        /// <param name="employee">Критик.</param>
+        /// <param name="employee">объект Person с обновленными данными критика</param>
         public void Update(Person employee)
         {
             var command = new SQLiteCommand($"UPDATE `{TableName}` " +
@@ -117,7 +114,7 @@ namespace CourseWork.Source.Services
         }
 
         /// <summary>
-        /// Удаляет всех критиков.
+        /// удалить всех критиков
         /// </summary>
         public void DeleteAll()
         {
@@ -130,20 +127,20 @@ namespace CourseWork.Source.Services
         #region Helper Methods
 
         /// <summary>
-        /// Форматирует дату рождения.
+        /// форматировать дату рождения
         /// </summary>
-        /// <param name="dateOfBirth">Дата рождения.</param>
-        /// <returns>Отформатированная дата.</returns>
+        /// <param name="dateOfBirth">дата рождения</param>
+        /// <returns>форматированная дата рождения</returns>
         public string GetFormatDateOfBirth(DateTime dateOfBirth)
         {
             return dateOfBirth.ToString("yyyy-MM-dd");
         }
 
         /// <summary>
-        /// Загружает поля критика.
+        /// загрузить поля критика по номеру телефона
         /// </summary>
-        /// <param name="phoneNumber">Номер телефона.</param>
-        /// <returns>Словарь данных критика.</returns>
+        /// <param name="phoneNumber">номер телефона критика</param>
+        /// <returns>словарь с полями критика</returns>
         public Dictionary<string, string> LoadFields(string phoneNumber)
         {
             var command = new SQLiteCommand($"SELECT * FROM `{TableName}` WHERE {ColumnMapping["PhoneNumber"]}=@phoneNumber;");
@@ -152,10 +149,10 @@ namespace CourseWork.Source.Services
         }
 
         /// <summary>
-        /// Проверяет наличие критика по номеру телефона.
+        /// проверяет наличие критика по номеру телефона
         /// </summary>
-        /// <param name="phoneNumber">Номер телефона.</param>
-        /// <returns>True, если существует.</returns>
+        /// <param name="phoneNumber">номер телефона критика</param>
+        /// <returns>true если критик существует</returns>
         private bool Exists(string phoneNumber)
         {
             var command = new SQLiteCommand($"SELECT COUNT(*) FROM `{TableName}` WHERE {ColumnMapping["PhoneNumber"]}=@phoneNumber;");
@@ -168,45 +165,48 @@ namespace CourseWork.Source.Services
         #region Validation Methods
 
         /// <summary>
-        /// Регулярное выражение для имени.
+        /// регулярное выражение для имени
         /// </summary>
         [GeneratedRegex("^[A-Za-zА-ЯЁа-яё]{3,15}$")]
         public static partial Regex RegexFirstName();
 
         /// <summary>
-        /// Требования для имени.
+        /// требования для имени
         /// </summary>
+        /// <returns>требования для имени</returns>
         public static string GetRequirementsForFirstName()
         {
-            return "Имя должно состоять из букв (3-15 символов)";
+            return "Имя должно состоять из букв 3-15 символов";
         }
 
         /// <summary>
-        /// Регулярное выражение для фамилии.
+        /// регулярное выражение для фамилии
         /// </summary>
         [GeneratedRegex("^[A-Za-zА-ЯЁа-яё]{3,15}$")]
         public static partial Regex RegexLastName();
 
         /// <summary>
-        /// Требования для фамилии.
+        /// требования для фамилии
         /// </summary>
+        /// <returns>требования для фамилии</returns>
         public static string GetRequirementsForLastName()
         {
-            return "Фамилия должна состоять из букв (3-15 символов)";
+            return "Фамилия должна состоять из букв 3-15 символов";
         }
 
         /// <summary>
-        /// Регулярное выражение для номера телефона.
+        /// регулярное выражение для номера телефона
         /// </summary>
         [GeneratedRegex("^\\+?\\d{1,3}\\s?\\(?\\d{3}\\)?[-.\\s]?\\d{3}[-.\\s]?\\d{4}$")]
         public static partial Regex RegexPhoneNumber();
 
         /// <summary>
-        /// Требования для номера телефона.
+        /// требования для номера телефона
         /// </summary>
+        /// <returns>требования для номера телефона</returns>
         public static string GetRequirementsForPhoneNumber()
         {
-            return "Номер телефона должен быть корректным";
+            return "номер телефона должен быть корректным";
         }
 
         #endregion
