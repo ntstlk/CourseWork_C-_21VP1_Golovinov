@@ -1,4 +1,4 @@
-using CourseWork.Source.Services;
+﻿using CourseWork.Source.Services;
 using System;
 using System.IO;
 using System.Reflection;
@@ -6,12 +6,18 @@ using System.Windows.Forms;
 
 namespace CourseWork
 {
+    /// <summary>
+    /// Форма приветствия приложения
+    /// </summary>
     public partial class WelcomeForm : Form
     {
+        /// <summary>
+        /// Сервис для работы с базой данных
+        /// </summary>
         DataBaseService dataBaseService = null;
 
         /// <summary>
-        /// инициализация формы
+        /// Конструктор формы
         /// </summary>
         public WelcomeForm()
         {
@@ -19,7 +25,7 @@ namespace CourseWork
         }
 
         /// <summary>
-        /// обработчик нажатия на кнопку "Старт"
+        /// Обработчик нажатия кнопки "Начать"
         /// </summary>
         private void StartBtn_Click(object sender, EventArgs e)
         {
@@ -38,7 +44,7 @@ namespace CourseWork
         }
 
         /// <summary>
-        /// настройка базы данных
+        /// Настройка базы данных
         /// </summary>
         private void SetUpDB()
         {
@@ -58,7 +64,7 @@ namespace CourseWork
             {
                 if (!dataBaseService.CheckDataBaseExists(nameDB))
                 {
-                    throw new Exception("Базы данных с таким именем не существует.");
+                    throw new Exception("Базы данных с таким именем не существует");
                 }
                 dataBaseService.SetExistingDataBase(nameDB);
             }
