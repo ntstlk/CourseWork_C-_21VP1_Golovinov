@@ -1,12 +1,10 @@
 using CourseWork.Source.Entities;
 using CourseWork.Source.Services;
-
 using System.Windows.Forms;
 using System;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Data;
-
 
 namespace CourseWork
 {
@@ -17,6 +15,10 @@ namespace CourseWork
         private PoemService _poemService;
         private DataGridViewRow _choosenPoet;
         private DataGridViewRow _choosenCritic;
+
+        /// <summary>
+        /// Конструктор MainForm. Инициализация компонентов и сервисов.
+        /// </summary>
         public MainForm()
         {
             InitializeComponent();
@@ -28,7 +30,12 @@ namespace CourseWork
             LoadPoemDataGrid();
             FormatDataGrids();
         }
+
         #region DataGrid Methods
+
+        /// <summary>
+        /// Форматирование таблиц данных.
+        /// </summary>
         private void FormatDataGrids()
         {
             var SetAutoSizeToDataGrid = (DataGridView dataGrid) =>
@@ -46,28 +53,25 @@ namespace CourseWork
             PoemDataGrid.Columns[PoemService.ColumnMapping["UploadedTime"]].DefaultCellStyle.Format = "HH:mm";
             PoetsDataGrid.Columns[PoetService.ColumnMapping["DateOfBirth"]].DefaultCellStyle.Format = "dd-MM-yyyy";
             CriticsDataGrid.Columns[CriticService.ColumnMapping["DateOfBirth"]].DefaultCellStyle.Format = "dd-MM-yyyy";
-
-            PoetsDataGrid.Columns[PoetService.ColumnMapping["PhoneNumber"]].HeaderText = "номер телефона";
-            PoetsDataGrid.Columns[PoetService.ColumnMapping["FirstName"]].HeaderText = "имя";
-            PoetsDataGrid.Columns[PoetService.ColumnMapping["LastName"]].HeaderText = "фамилия";
-            PoetsDataGrid.Columns[PoetService.ColumnMapping["DateOfBirth"]].HeaderText = "дата рождения";
-
-            CriticsDataGrid.Columns[CriticService.ColumnMapping["PhoneNumber"]].HeaderText = "номер телефона";
-            CriticsDataGrid.Columns[CriticService.ColumnMapping["FirstName"]].HeaderText = "имя";
-            CriticsDataGrid.Columns[CriticService.ColumnMapping["LastName"]].HeaderText = "фамилия";
-            CriticsDataGrid.Columns[CriticService.ColumnMapping["DateOfBirth"]].HeaderText = "дата рождения";
-
-            PoemDataGrid.Columns[PoemService.ColumnMapping["Poet"]].HeaderText = "номер поэта";
-            PoemDataGrid.Columns[PoemService.ColumnMapping["Critic"]].HeaderText = "номер критика";
-            PoemDataGrid.Columns[PoemService.ColumnMapping["UploadedDate"]].HeaderText = "дата загрузки";
-            PoemDataGrid.Columns[PoemService.ColumnMapping["UploadedTime"]].HeaderText = "время загрузки";
-            PoemDataGrid.Columns[PoemService.ColumnMapping["TextData"]].HeaderText = "текст работы";
         }
+
+        /// <summary>
+        /// Возвращает выбранную строку в таблице.
+        /// </summary>
+        /// <param name="dataGrid">Таблица данных.</param>
+        /// <returns>Выбранная строка.</returns>
         private DataGridViewRow GetSelectedRowFromDataGrid(DataGridView dataGrid)
         {
             if (dataGrid.SelectedRows.Count == 0 || dataGrid.SelectedRows is null) return null;
             return dataGrid.SelectedRows[0];
         }
+
+        /// <summary>
+        /// Заменяет строку в таблице.
+        /// </summary>
+        /// <param name="dataGrid">Таблица данных.</param>
+        /// <param name="rowToReplaceIndex">Индекс заменяемой строки.</param>
+        /// <param name="columnValuePairs">Значения колонок для замены.</param>
         private void ReplaceRowInDataGrid(DataGridView dataGrid, int rowToReplaceIndex, Dictionary<string, string> columnValuePairs)
         {
             var dataTable = (DataTable)dataGrid.DataSource;
@@ -80,6 +84,12 @@ namespace CourseWork
             dataTable.Rows.InsertAt(row, rowToReplaceIndex);
             dataGrid.Refresh();
         }
+
+        /// <summary>
+        /// Добавляет строку в таблицу.
+        /// </summary>
+        /// <param name="dataGrid">Таблица данных.</param>
+        /// <param name="columnValuePairs">Значения колонок для добавления.</param>
         private void AddRowToDataGrid(DataGridView dataGrid, Dictionary<string, string> columnValuePairs)
         {
             var dataTable = (DataTable)dataGrid.DataSource;
@@ -92,6 +102,11 @@ namespace CourseWork
             dataGrid.Refresh();
         }
 
+        /// <summary>
+        /// Отображает строки с ключевым словом.
+        /// </summary>
+        /// <param name="dataGridView">Таблица данных.</param>
+        /// <param name="keyword">Ключевое слово для поиска.</param>
         private void ShowRowsWithKeyword(DataGridView dataGridView, string keyword)
         {
             CurrencyManager currencyManager = (CurrencyManager)BindingContext[dataGridView.DataSource];
@@ -112,8 +127,18 @@ namespace CourseWork
             dataGridView.Refresh();
             currencyManager.ResumeBinding();
         }
+
         #endregion
+
         #region Form Methods
+
+        /// <summary>
+        /// Проверка введенных данных.
+        /// </summary>
+        /// <param name="input">Элемент управления.</param>
+        /// <param name="RegexGen">Функция для генерации регулярного выражения.</param>
+        /// <param name="RequirementsGen">Функция для получения требований.</param>
+        /// <returns>True, если данные корректны.</returns>
         private bool CheckInput(Control input, Func<Regex> RegexGen, Func<string> RequirementsGen)
         {
             if (!RegexGen().IsMatch(input.Text))
@@ -127,10 +152,12 @@ namespace CourseWork
                 return true;
             }
         }
+
+        /// <summary>
+        /// Обработчик смены вкладки в TabControl.
+        /// </summary>
         private void TabControl_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (TabControl.SelectedTab == PoetPage) { }
-            if (TabControl.SelectedTab == CriticPage) { }
             if (TabControl.SelectedTab == PoemPage)
             {
                 ChoosenPoetLabel.Text = _choosenPoet != null ?
@@ -141,8 +168,14 @@ namespace CourseWork
                     "критик не выбран";
             }
         }
+
         #endregion
+
         #region Poet Page
+
+        /// <summary>
+        /// Удаление поэта.
+        /// </summary>
         private void DeletePoetBtn_Click(object sender, EventArgs e)
         {
             if (_choosenPoet == null)
@@ -163,6 +196,10 @@ namespace CourseWork
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        /// <summary>
+        /// Добавление поэта.
+        /// </summary>
         private void AddPoetBtn_Click(object sender, EventArgs e)
         {
             bool isFirstNameValid = CheckInput(PoetFirstNameInput, PoetService.RegexFirstName, PoetService.GetRequirementsForFirstName);
@@ -170,6 +207,7 @@ namespace CourseWork
             bool isPhoneNumberValid = CheckInput(PoetPhoneNumberInput, PoetService.RegexPhoneNumber, PoetService.GetRequirementsForPhoneNumber);
 
             if (!isFirstNameValid || !isLastNameValid || !isPhoneNumberValid) return;
+
             Person poet = new Person()
             {
                 Role = Person.Roles.Poet,
@@ -178,6 +216,7 @@ namespace CourseWork
                 PhoneNumber = PoetPhoneNumberInput.Text,
                 DateOfBirth = PoetDateOfBirthInput.Value
             };
+
             try
             {
                 _poetService.Save(poet);
@@ -189,6 +228,10 @@ namespace CourseWork
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        /// <summary>
+        /// Обновление данных поэта.
+        /// </summary>
         private void UpdatePoetBtn_Click(object sender, EventArgs e)
         {
             if (_choosenPoet == null)
@@ -218,22 +261,32 @@ namespace CourseWork
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        /// <summary>
+        /// Обработка двойного клика в таблице поэтов.
+        /// </summary>
         private void DataGridPoets_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             ClearPoetsInputs();
             _choosenPoet = GetSelectedRowFromDataGrid(PoetsDataGrid);
             PoetPhoneNumberInput.Text = _choosenPoet.Cells[PoetService.ColumnMapping["PhoneNumber"]].Value.ToString();
             PoetFirstNameInput.Text = _choosenPoet.Cells[PoetService.ColumnMapping["FirstName"]].Value.ToString();
-            PoetLastNameInput.Text = _choosenPoet.Cells[PoetService.ColumnMapping["LastName"]].Value.ToString();
-            PoetDateOfBirthInput.Value = DateTime.Parse(
-                    _choosenPoet.Cells[PoetService.ColumnMapping["DateOfBirth"]].Value.ToString()
-                );
+            PoetLastNameInput.Text = _choosenПоет.Cells[PoetService.ColumnMapping["LastName"]].Value.ToString();
+            PoetDateOfBirthInput.Value = DateTime.Parse(_choosenPoet.Cells[PoetService.ColumnMapping["DateOfBirth"]].Value.ToString());
             PoetPhoneNumberInput.ReadOnly = true;
         }
+
+        /// <summary>
+        /// Поиск поэтов.
+        /// </summary>
         private void PoetSearchBtn_Click(object sender, EventArgs e)
         {
             ShowRowsWithKeyword(PoetsDataGrid, PoetSearchInput.Text);
         }
+
+        /// <summary>
+        /// Очистить поля ввода поэтов.
+        /// </summary>
         private void ClearPoetsInputs()
         {
             PoetFirstNameInput.Text = "";
@@ -245,10 +298,18 @@ namespace CourseWork
             errorProvider.SetError(PoetLastNameInput, "");
             errorProvider.SetError(PoetPhoneNumberInput, "");
         }
+
+        /// <summary>
+        /// Очистить поля поэтов по кнопке.
+        /// </summary>
         private void ClearPoetInputsBtn_Click(object sender, EventArgs e)
         {
             ClearPoetsInputs();
         }
+
+        /// <summary>
+        /// Удалить всех поэтов.
+        /// </summary>
         private void DeleteAllPoetsBtn_Click(object sender, EventArgs e)
         {
             try
@@ -262,13 +323,22 @@ namespace CourseWork
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        /// <summary>
+        /// Загрузить таблицу поэтов.
+        /// </summary>
         private void LoadPoetsDataGrid()
         {
             PoetsDataGrid.DataSource = _poetService.GetDataTableOfAll();
         }
+
         #endregion
 
         #region Critic Page
+
+        /// <summary>
+        /// Удалить критика.
+        /// </summary>
         private void DeleteCriticBtn_Click(object sender, EventArgs e)
         {
             if (_choosenCritic == null)
@@ -290,6 +360,9 @@ namespace CourseWork
             }
         }
 
+        /// <summary>
+        /// Добавить критика.
+        /// </summary>
         private void AddCriticBtn_Click(object sender, EventArgs e)
         {
             bool isFirstNameValid = CheckInput(CriticFirstNameInput, CriticService.RegexFirstName, CriticService.GetRequirementsForFirstName);
@@ -297,6 +370,7 @@ namespace CourseWork
             bool isPhoneNumberValid = CheckInput(CriticPhoneNumberInput, CriticService.RegexPhoneNumber, CriticService.GetRequirementsForPhoneNumber);
 
             if (!isFirstNameValid || !isLastNameValid || !isPhoneNumberValid) return;
+
             Person critic = new Person()
             {
                 Role = Person.Roles.Critic,
@@ -305,6 +379,7 @@ namespace CourseWork
                 PhoneNumber = CriticPhoneNumberInput.Text,
                 DateOfBirth = CriticDateOfBirthInput.Value
             };
+
             try
             {
                 _criticService.Save(critic);
@@ -317,6 +392,9 @@ namespace CourseWork
             }
         }
 
+        /// <summary>
+        /// Обновление данных критика.
+        /// </summary>
         private void UpdateCriticBtn_Click(object sender, EventArgs e)
         {
             if (_choosenCritic == null)
@@ -347,6 +425,10 @@ namespace CourseWork
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        /// <summary>
+        /// Обработка двойного клика в таблице критиков.
+        /// </summary>
         private void CriticDataGrid_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             ClearCriticsInputs();
@@ -354,11 +436,13 @@ namespace CourseWork
             CriticPhoneNumberInput.Text = _choosenCritic.Cells[CriticService.ColumnMapping["PhoneNumber"]].Value.ToString();
             CriticFirstNameInput.Text = _choosenCritic.Cells[CriticService.ColumnMapping["FirstName"]].Value.ToString();
             CriticLastNameInput.Text = _choosenCritic.Cells[CriticService.ColumnMapping["LastName"]].Value.ToString();
-            CriticDateOfBirthInput.Value = DateTime.Parse(
-                    _choosenCritic.Cells[CriticService.ColumnMapping["DateOfBirth"]].Value.ToString()
-                );
+            CriticDateOfBirthInput.Value = DateTime.Parse(_choosenCritic.Cells[CriticService.ColumnMapping["DateOfBirth"]].Value.ToString());
             CriticPhoneNumberInput.ReadOnly = true;
         }
+
+        /// <summary>
+        /// Очистить поля критиков.
+        /// </summary>
         private void ClearCriticsInputs()
         {
             CriticFirstNameInput.Text = "";
@@ -370,14 +454,26 @@ namespace CourseWork
             errorProvider.SetError(CriticLastNameInput, "");
             errorProvider.SetError(CriticPhoneNumberInput, "");
         }
+
+        /// <summary>
+        /// Очистить поля критиков по кнопке.
+        /// </summary>
         private void ClearCriticsInputsBtn_Click(object sender, EventArgs e)
         {
             ClearCriticsInputs();
         }
+
+        /// <summary>
+        /// Поиск критиков.
+        /// </summary>
         private void CriticSearchBtn_Click(object sender, EventArgs e)
         {
             ShowRowsWithKeyword(CriticsDataGrid, CriticSearchInput.Text);
         }
+
+        /// <summary>
+        /// Удалить всех критиков.
+        /// </summary>
         private void DeleteAllCriticsBtn_Click(object sender, EventArgs e)
         {
             try
@@ -391,12 +487,22 @@ namespace CourseWork
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        /// <summary>
+        /// Загрузить таблицу критиков.
+        /// </summary>
         private void LoadCriticDataGrid()
         {
             CriticsDataGrid.DataSource = _criticService.GetDataTableOfAll();
         }
+
         #endregion
+
         #region Poem Page
+
+        /// <summary>
+        /// Добавление работы.
+        /// </summary>
         private void AddPoemBtn_Click(object sender, EventArgs e)
         {
             if (_choosenPoet == null)
@@ -414,6 +520,7 @@ namespace CourseWork
                 MessageBox.Show("Введите текст работы.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+
             var poem = new Poem()
             {
                 PoetPhoneNumber = _choosenPoet.Cells[PoetService.ColumnMapping["PhoneNumber"]].Value.ToString(),
@@ -434,10 +541,17 @@ namespace CourseWork
             }
         }
 
+        /// <summary>
+        /// Загрузить таблицу работ.
+        /// </summary>
         private void LoadPoemDataGrid()
         {
             PoemDataGrid.DataSource = _poemService.GetDataTableOfAll();
         }
+
+        /// <summary>
+        /// Удалить все работы.
+        /// </summary>
         private void DeleteAlllPoemsBtn_Click(object sender, EventArgs e)
         {
             try
@@ -453,6 +567,9 @@ namespace CourseWork
 
         #endregion
 
+        /// <summary>
+        /// Обработка двойного клика в таблице работ.
+        /// </summary>
         private void PoemDataGrid_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             var _choosenPoem = GetSelectedRowFromDataGrid(PoemDataGrid);
