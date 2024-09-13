@@ -9,11 +9,18 @@ namespace CourseWork
     public partial class WelcomeForm : Form
     {
         DataBaseService dataBaseService = null;
+
+        /// <summary>
+        /// инициализация формы
+        /// </summary>
         public WelcomeForm()
         {
             InitializeComponent();
         }
 
+        /// <summary>
+        /// обработчик нажатия на кнопку "Старт"
+        /// </summary>
         private void StartBtn_Click(object sender, EventArgs e)
         {
             try
@@ -29,10 +36,15 @@ namespace CourseWork
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        /// <summary>
+        /// настройка базы данных
+        /// </summary>
         private void SetUpDB()
         {
             string nameDB = NameDB.Text;
             dataBaseService = DataBaseService.GetInstance();
+
             if (CreateEmptyDB.Checked)
             {
                 if (!DataBaseService.RegexDataBaseName().IsMatch(nameDB))
@@ -41,6 +53,7 @@ namespace CourseWork
                 }
                 dataBaseService.SetNewDataBase(nameDB);
             }
+
             if (UseExistingDB.Checked)
             {
                 if (!dataBaseService.CheckDataBaseExists(nameDB))
@@ -50,6 +63,5 @@ namespace CourseWork
                 dataBaseService.SetExistingDataBase(nameDB);
             }
         }
-       
     }
 }
